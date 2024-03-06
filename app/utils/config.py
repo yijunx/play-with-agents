@@ -17,7 +17,7 @@ class ProductionConfig(Settings):
 
 class DevelopmentConfig(Settings):
     class Config:
-        env_file = "./dev.env"
+        env_file = "config/dev.env"
 
 
 def find_which_config():
@@ -33,3 +33,6 @@ def find_which_config():
 
 
 configurations = find_which_config()
+
+if __name__ == "__main__":
+    print(configurations)
