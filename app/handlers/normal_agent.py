@@ -26,7 +26,7 @@ class NormalHandler(AgentHandler):
         full_reply = QuestionAnswerService.reply_with_stream(
             messages=self.messages, user_id=self.metadata.user_id
         )
-        print("full reply:")
+        print(f"full reply from {self.agent.who}:")
         print(full_reply)
 
         # same full reply to db
