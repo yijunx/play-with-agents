@@ -35,8 +35,6 @@ class NormalHandler(AgentHandler):
         # print(f"full reply from {self.agent.occupation}:")
         # print(full_reply)
 
-        # same full reply to db
-
         # need to save like something below
         # so that it is like a forum!!
         # {“role”:“user”,“content”:“%USERNAME said %COMMAND%”}]}

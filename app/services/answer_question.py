@@ -35,16 +35,16 @@ def reply_with_stream(user_id: str, messages: list[MessageForOpenai]) -> str:
     full_answer = ""
 
     for chunk in response:
-        chunk_time = time.time() - start_time  # calculate the time delay of the chunk
+        # chunk_time = time.time() - start_time  # calculate the time delay of the chunk
         collected_chunks.append(chunk)  # save the event response
         chunk_message = chunk.choices[0].delta.content  # extract the message
         collected_messages.append(chunk_message)  # save the message
 
-        # if chunk_message:
-        #     channel.basic_publish(
-        #         exchange="direct_logs", routing_key=user_id, body=chunk_message
-        #     )
-        #     full_answer += chunk_message
+        if chunk_message:
+            # channel.basic_publish(
+            #     exchange="direct_logs", routing_key=user_id, body=chunk_message
+            # )
+            full_answer += chunk_message
 
     # print(full_answer)
     # channel.close()

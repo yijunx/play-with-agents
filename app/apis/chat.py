@@ -22,19 +22,19 @@ def get_actor_from_request(request: Request) -> User:
     try:
         authorization = request.headers["authorization"]
     except KeyError:
-        logger.warning("no athorization header provided from internal request")
-        raise
+        logger.warning("no athorization header")
+        raise CustomException(http_code=401, message="auth failed")
     m = re.match(r"bearer (.+)", authorization, re.IGNORECASE)
     if m is None:
         logger.warning("invalid authorization type")
-        raise
+        raise CustomException(http_code=401, message="auth failed")
     token = m.group(1)
     payload = jwt.decode(token, options={"verify_signature": False})
     try:
         actor = User(**payload)
     except Exception:
         logger.warning("failed to create actor from internal token")
-        raise
+        raise CustomException(http_code=401, message="auth failed")
     return actor
 
 
@@ -85,5 +85,6 @@ def close_chat(chat_id: int):
     try:
         user = get_actor_from_request(request=request)
         _ = ChatService.user_close_chat(user=user, chat_id=chat_id)
+        return "closed"
     except CustomException as e:
         return {"message": e.message}, e.http_code

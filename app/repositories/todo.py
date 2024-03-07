@@ -26,6 +26,12 @@ def create(db: Session, job: Job, scheduled_at: datetime = None) -> TodoORM:
     return db_item
 
 
+def delete_many(db: Session, chat_id: int):
+    items = db.query(TodoORM).filter(TodoORM.chat_id==chat_id).all()
+    for item in items:
+        db.delete(items)
+
+
 def get_one(db: Session, task_id: str) -> TodoORM:
     db_item = db.query(TodoORM).filter(TodoORM.id == task_id).first()
     if not db_item:

@@ -92,6 +92,9 @@ def user_post_chat(
         messages_for_openai.append(MessageForOpenai.from_orm(db_message))
         db_agents = AgentRepo.get_many(db=db, chat_id=chat_id)
 
+        # delete all the current todos first!!!
+        TodoRepo.delete_many(db=db, chat_id=chat_id)
+
         # charge the dbagent
         for db_agent in db_agents:
             db_agent.remaining_replies_count = (
@@ -121,14 +124,14 @@ def agent_post_chat(message_create_from_agent: AgentMessageCreate, task_id: str)
             db=db, message_create_from_agent=message_create_from_agent
         )
         messages_for_openai.append(MessageForOpenai.from_orm(db_message))
+        
         db_agents = AgentRepo.get_many(db=db, chat_id=chat.id)
-
-        this_agent = AgentRepo.get_one(
-            db=db, agent_id=message_create_from_agent.agent_id
-        )
-        this_agent.remaining_replies_count -= 1
-
+        # this_agent = AgentRepo.get_one(
+        #     db=db, agent_id=message_create_from_agent.agent_id
+        # )
+        # this_agent.remaining_replies_count -= 1
         for db_agent in db_agents:
+            db_agent.remaining_replies_count -= 1
             agent = Agent.from_orm(db_agent)
             if (
                 agent.remaining_replies_count > 0
