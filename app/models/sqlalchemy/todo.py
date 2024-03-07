@@ -13,7 +13,7 @@ from datetime import datetime
 
 class TodoORM(Base):
     __tablename__ = "todos_table"
-    id: Mapped[int] = mapped_column(BigInteger, autoincrement=True, primary_key=True)
+    id: Mapped[str] = mapped_column(String, primary_key=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     scheduled_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     job: Mapped[dict] = mapped_column(JSON, nullable=False)
@@ -21,7 +21,7 @@ class TodoORM(Base):
 
 class FinishedTodoORM(Base):
     __tablename__ = "finished_todos_table"
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[str] = mapped_column(String, primary_key=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     scheduled_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     job: Mapped[dict] = mapped_column(JSON, nullable=False)

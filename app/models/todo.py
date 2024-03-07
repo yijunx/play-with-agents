@@ -9,10 +9,11 @@ class Job(BaseModel):
     agent: Agent
     user_id: str
     chat_id: str
+    task_id: str | None
 
 
 class Todo(BaseModel):
-    id: int
+    id: str
     created_at: datetime
     scheduled_at: datetime
     job: Job
