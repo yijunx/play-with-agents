@@ -31,7 +31,9 @@ def start_conversation(
 
 if __name__ == "__main__":
     start_conversation(
-        messages=[MessageForOpenai(role="user", content="How many hours should I work a day?")],
+        messages=[
+            MessageForOpenai(role="user", content="How many hours should I work a day?")
+        ],
         metadata=MetaData(user_id="xxxx", chat_id="yyyy"),
         # currently temper is not used at all!!!!
         agents=[

@@ -16,16 +16,17 @@ class TodoORM(Base):
     id: Mapped[str] = mapped_column(String, primary_key=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     scheduled_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    chat_id: Mapped[int] = mapped_column(int, nullable=False)
     job: Mapped[dict] = mapped_column(JSON, nullable=False)
 
 
-class FinishedTodoORM(Base):
-    __tablename__ = "finished_todos_table"
-    id: Mapped[str] = mapped_column(String, primary_key=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    scheduled_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    job: Mapped[dict] = mapped_column(JSON, nullable=False)
-    finished_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+# class FinishedTodoORM(Base):
+#     __tablename__ = "finished_todos_table"
+#     id: Mapped[str] = mapped_column(String, primary_key=True)
+#     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+#     scheduled_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+#     job: Mapped[dict] = mapped_column(JSON, nullable=False)
+#     finished_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
 
 # by right we need to have a finished todo table

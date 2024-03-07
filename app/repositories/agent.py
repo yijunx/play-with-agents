@@ -11,7 +11,8 @@ def create(db: Session, chat_id: str, agent: Agent) -> AgentORM:
         occupation=agent.occupation,
         name=agent.name,
         temper=agent.temper,
-        impersonate_who=agent.impersonate_who
+        impersonate_who=agent.impersonate_who,
+        remaining_replies_count=agent.remaining_replies_count,
     )
     db.add(db_item)
     db.flush()
@@ -19,11 +20,11 @@ def create(db: Session, chat_id: str, agent: Agent) -> AgentORM:
 
 
 def get_one(db: Session, agent_id: int) -> AgentORM:
-    db_item = db.query(AgentORM).filter(AgentORM.id==agent_id).first()
+    db_item = db.query(AgentORM).filter(AgentORM.id == agent_id).first()
     if not db_item:
-        raise CustomException(http_code=404, message="chat not found")
+        raise CustomException(http_code=404, message="agent not found")
     return db_item
 
 
 def get_many(db: Session, chat_id: int) -> list[AgentORM]:
-    return db.query(AgentORM).filter(AgentORM.chat_id==chat_id).all()
+    return db.query(AgentORM).filter(AgentORM.chat_id == chat_id).all()

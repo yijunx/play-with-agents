@@ -18,6 +18,6 @@ class Todo(BaseModel):
     scheduled_at: datetime
     job: Job
     finished_at: datetime = None
-    
 
-
+    class Config:
+        orm_mode = True

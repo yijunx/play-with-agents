@@ -5,8 +5,9 @@ from app.models.message import RoleEnum, MessageCreate, AgentMessageCreate
 from app.models.user import User
 
 
-
-def create_message_from_user(db: Session, chat_id: str, message_create: MessageCreate, user: User) -> MessageORM:
+def create_message_from_user(
+    db: Session, chat_id: str, message_create: MessageCreate, user: User
+) -> MessageORM:
     db_item = MessageORM(
         chat_id=chat_id,
         role=RoleEnum.user,
@@ -23,7 +24,9 @@ def create_message_from_user(db: Session, chat_id: str, message_create: MessageC
     return db_item
 
 
-def create_message_from_agent(db: Session, message_create_from_agent: AgentMessageCreate) -> MessageORM:
+def create_message_from_agent(
+    db: Session, message_create_from_agent: AgentMessageCreate
+) -> MessageORM:
     db_item = MessageORM(
         chat_id=message_create_from_agent.chat_id,
         role=RoleEnum.assistant,
@@ -41,4 +44,9 @@ def create_message_from_agent(db: Session, message_create_from_agent: AgentMessa
 
 
 def get_many(db: Session, chat_id: int) -> list[MessageORM]:
-    return db.query(MessageORM).filter(MessageORM.chat_id==chat_id).order_by(MessageORM.created_at).all()
+    return (
+        db.query(MessageORM)
+        .filter(MessageORM.chat_id == chat_id)
+        .order_by(MessageORM.created_at)
+        .all()
+    )

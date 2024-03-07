@@ -1,3 +1,4 @@
+# used for celery worker
 import pika
 from openai import AzureOpenAI
 from app.utils.config import configurations

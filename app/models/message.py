@@ -18,7 +18,8 @@ class RoleEnum(str, Enum):
 #     {"role": "user", "content": "Where was it played?"}
 #   ]
 # )
-    
+
+
 class MessageCreate(BaseModel):
     actual_content: str
     chat_id: str
@@ -36,9 +37,15 @@ class MessageForOpenai(BaseModel):
     role: RoleEnum
     content: str
 
+    class Config:
+        orm_mode = True
+
 
 class MessageForFrontend(BaseModel):
     created_by: str
     created_by_name: str
     created_at: datetime
     actual_content: str
+
+    class Config:
+        orm_mode = True

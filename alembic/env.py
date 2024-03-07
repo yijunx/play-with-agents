@@ -36,6 +36,7 @@ target_metadata = Base.metadata
 # run the migration by
 # python -m alembic upgrade head
 
+
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 

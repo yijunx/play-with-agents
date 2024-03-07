@@ -1,10 +1,5 @@
 from app.models.sqlalchemy.base import Base
-from sqlalchemy import (
-    BigInteger,
-    Boolean,
-    DateTime,
-    String,
-)
+from sqlalchemy import BigInteger, Boolean, DateTime, String, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from datetime import datetime
@@ -21,6 +16,7 @@ class AgentORM(Base):
     name: Mapped[str] = mapped_column(String, nullable=False)
     temper: Mapped[str] = mapped_column(String, nullable=True)
     impersonate_who: Mapped[str] = mapped_column(String, nullable=True)
+    remaining_replies_count: Mapped[int] = mapped_column(Integer, nullable=False)
 
 
 class ChatORM(Base):
