@@ -1,13 +1,10 @@
 migrate:
 	@alembic upgrade head
 
-upmain:
+up:
 	@alembic upgrade head
 	@echo "starting"
-	@gunicorn app:main -w 1 -b 0.0.0.0:8000 
-
-uptodo:
-	@gunicorn app:todo -w 1 -b 0.0.0.0:8001 
+	@gunicorn app.main:app -w 3 -b 0.0.0.0:8000 
 
 upcelery:
 	@python app/tasks.py

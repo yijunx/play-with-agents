@@ -22,12 +22,11 @@ class RoleEnum(str, Enum):
 
 class MessageCreate(BaseModel):
     actual_content: str
-    chat_id: str
 
 
 class AgentMessageCreate(BaseModel):
     agent_name: str
-    agent_id: str
+    agent_id: int
     actual_content: str
     content: str
     chat_id: str

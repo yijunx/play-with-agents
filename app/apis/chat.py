@@ -38,7 +38,7 @@ def get_actor_from_request(request: Request) -> User:
     return actor
 
 
-@bp.route("/multi-agent-chat/chat", methods=["POST"])
+@bp.route("/multi-agent-chat/chats", methods=["POST"])
 @validate()
 def start_chat(body: MessageCreate):
     try:
@@ -49,23 +49,41 @@ def start_chat(body: MessageCreate):
         return {"message": e.message}, e.http_code
 
 
-@bp.route("/multi-agent-chat/chat/<int:chat_id>", methods=["POST"])
+@bp.route("/multi-agent-chat/chats/<int:chat_id>", methods=["POST"])
 @validate()
-def continue_chat(body: MessageCreate, chat_id:int):
+def continue_chat(body: MessageCreate, chat_id: int):
     try:
         user = get_actor_from_request(request=request)
-        r = ChatService.user_post_chat(user=user, chat_id=chat_id,message_create=body)
+        r = ChatService.user_post_chat(user=user, chat_id=chat_id, message_create=body)
         return r.dict()
     except CustomException as e:
         return {"message": e.message}, e.http_code
 
 
-@bp.route("/multi-agent-chat/chat/<int:chat_id>", methods=["DELETE"])
-def close_chat(chat_id:int):
+@bp.route("/multi-agent-chat/chats/<int:chat_id>/messages", methods=["GET"])
+def get_chat_messages(chat_id: int):
+    try:
+        r = ChatService.user_get_messages(chat_id=chat_id)
+        print(f"we have {len(r)} messages..")
+        return [x.dict() for x in r]
+    except CustomException as e:
+        return {"message": e.message}, e.http_code
+
+
+@bp.route("/multi-agent-chat/chats/<int:chat_id>/internal-messages", methods=["GET"])
+def get_chat_interal_messages(chat_id: int):
+    try:
+        r = ChatService.user_get_internal_messages(chat_id=chat_id)
+        print(f"we have {len(r)} messages..")
+        return [x.dict() for x in r]
+    except CustomException as e:
+        return {"message": e.message}, e.http_code
+
+
+@bp.route("/multi-agent-chat/chats/<int:chat_id>", methods=["DELETE"])
+def close_chat(chat_id: int):
     try:
         user = get_actor_from_request(request=request)
         _ = ChatService.user_close_chat(user=user, chat_id=chat_id)
     except CustomException as e:
         return {"message": e.message}, e.http_code
-    
-

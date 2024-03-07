@@ -16,7 +16,7 @@ def get_all_todos_and_trigger():
             todo = Todo.from_orm(db_todo)
 
             celery.send_task(
-                name=f"{conf.CELERY_TASK_NAME}.handle_events",
+                name=f"{conf.CELERY_TASK_NAME}.do_it",
                 kwargs=todo.job.dict(),
                 queue=conf.CELERY_QUEUE,
                 # exchange="claim-events",

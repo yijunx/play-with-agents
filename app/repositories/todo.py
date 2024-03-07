@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone
-from app.models.sqlalchemy.todo import TodoORM, FinishedTodoORM
+from app.models.sqlalchemy.todo import TodoORM
 
 from app.models.exceptions import CustomException
 from app.models.todo import Job

@@ -24,8 +24,5 @@ def scan_todo():
 @bp.route("/internal/agent-chat-task/tasks/<task_id>", methods=["POST"])
 @validate()
 def agent_post_chat(task_id: str, body: AgentMessageCreate):
-    ChatService.agent_post_chat(
-        message_create_from_agent=body, task_id=task_id
-    )
+    ChatService.agent_post_chat(message_create_from_agent=body, task_id=task_id)
     return {"hello": "i am alive"}
-

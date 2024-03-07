@@ -13,8 +13,10 @@ class Settings(BaseSettings):
     CELERY_QUEUE: str
     CELERY_TASK_NAME: str
 
-    MAX_MESSAGES_FROM_AGENTS_FOR_ONE_TRIGGER: int = 3
+    MAX_MESSAGES_FROM_AGENTS_FOR_ONE_TRIGGER: int
     DATABASE_URI: str
+
+    AGENT_INTERNAL_POST_URL: str
 
 
 class ProductionConfig(Settings):

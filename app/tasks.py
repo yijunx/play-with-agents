@@ -2,8 +2,6 @@ from celery import Celery, Task
 from celery.worker.request import Request
 from logging import getLogger
 from app.models.exceptions import Retry
-from app.models.agent import Agent
-from app.models.metadata import MetaData
 
 from app.handlers.normal_agent import NormalHandler
 from app.utils.config import configurations
