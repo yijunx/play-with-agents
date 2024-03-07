@@ -1,7 +1,7 @@
 from celery import Celery
 from uuid import uuid4
 
-from app.models.message import Message
+from app.models.message import MessageForOpenai
 from app.models.agent import Agent
 from app.models.metadata import MetaData
 
@@ -9,7 +9,7 @@ from app.models.metadata import MetaData
 # imaging this file is the todo scanner!!!!,
 #  scan the thing every 2s for example!
 def start_conversation(
-    messages: list[Message], agents: list[Agent], metadata: MetaData
+    messages: list[MessageForOpenai], agents: list[Agent], metadata: MetaData
 ):
     """
     well we will need the meta data like user id, but thats later
@@ -31,20 +31,24 @@ def start_conversation(
 
 if __name__ == "__main__":
     start_conversation(
-        messages=[Message(role="user", content="How many hours should I work a day?")],
+        messages=[MessageForOpenai(role="user", content="How many hours should I work a day?")],
         metadata=MetaData(user_id="xxxx", chat_id="yyyy"),
         # currently temper is not used at all!!!!
         agents=[
-            Agent(who="a professor", temper="mild", impersonnate_who="Richard Feynman"),
             Agent(
-                who="an entrepreneur",
-                temper="short tempered",
-                impersonnate_who="Elon Musk",
+                occupation="a professor",
+                temper="mild",
+                impersonate_who="Richard Feynman",
             ),
             Agent(
-                who="a monk living in the mountains",
+                occupation="an entrepreneur",
+                temper="short tempered",
+                impersonate_who="Elon Musk",
+            ),
+            Agent(
+                occupation="a monk living in the mountains",
                 temper="mild",
-                impersonnate_who="buddha",
+                impersonate_who="buddha",
             ),
         ],
     )

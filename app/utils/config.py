@@ -8,6 +8,14 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str
     OPENAI_ENGINE: str
 
+    CELERY_BROKER: str
+    CELERY_WORKER_MAX: int
+    CELERY_QUEUE: str
+    CELERY_TASK_NAME: str
+
+    MAX_MESSAGES_FROM_AGENTS_FOR_ONE_TRIGGER: int = 3
+    DATABASE_URI: str
+
 
 class ProductionConfig(Settings):
     # it means that, every entry for Settings must

@@ -3,12 +3,12 @@ from openai import AzureOpenAI
 from app.utils.config import configurations
 from logging import getLogger
 import time
-from app.models.message import Message
+from app.models.message import MessageForOpenai
 
 logger = getLogger(__name__)
 
 
-def reply_with_stream(user_id: str, messages: list[dict]) -> str:
+def reply_with_stream(user_id: str, messages: list[MessageForOpenai]) -> str:
     connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
     channel = connection.channel()
     channel.exchange_declare(exchange="direct_logs", exchange_type="direct")
@@ -25,7 +25,7 @@ def reply_with_stream(user_id: str, messages: list[dict]) -> str:
     start_time = time.time()
     response = client.chat.completions.create(
         model=deployment_name,
-        messages=messages,
+        messages=[m.dict() for m in messages],
         stream=True,
     )
     # response = client.completions.create(model=deployment_name, prompt=start_phrase, max_tokens=10) #, stream=True)

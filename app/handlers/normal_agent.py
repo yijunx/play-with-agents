@@ -1,32 +1,34 @@
 from app.handlers.base import AgentHandler
 from app.models.agent import Agent
-from app.models.metadata import MetaData
-from app.models.message import Message, RoleEnum
+from app.models.todo import Job
+from app.models.message import MessageForOpenai, RoleEnum
+
 
 import app.services.answer_question as QuestionAnswerService
 from app.utils.prompt import get_system_message_from_agent
 
 
 class NormalHandler(AgentHandler):
-    def __init__(self, messages: list[dict], agent: Agent, metadata: MetaData) -> None:
-        self.agent = agent
-        self.messages = messages
+    def __init__(self, job: Job) -> None:
+        self.agent = job.agent
+        self.messages = job.messages
         self.messages.append(
-            Message(
+            MessageForOpenai(
                 role=RoleEnum.system,
                 content=get_system_message_from_agent(a=self.agent),
             )
         )
-        self.metadata = metadata
+        self.user_id = job.user_id
+        self.chat_id = job.chat_id
 
     def handle_conversation(self):
 
         # add system message
 
         full_reply = QuestionAnswerService.reply_with_stream(
-            messages=self.messages, user_id=self.metadata.user_id
+            messages=self.messages, user_id=self.user_id
         )
-        print(f"full reply from {self.agent.who}:")
+        print(f"full reply from {self.agent.occupation}:")
         print(full_reply)
 
         # same full reply to db

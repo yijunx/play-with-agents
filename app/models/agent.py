@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 
 class Agent(BaseModel):
-    who: str
-    temper: str
-    impersonnate_who: str | None
+    name: str | None
+    occupation: str
+    temper: str | None
+    impersonate_who: str | None
