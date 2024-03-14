@@ -68,8 +68,11 @@ class Receiver:
 
 if __name__ == "__main__":
     import json
+
     r = Receiver(routing_key="user-id")
+
     def callback(ch, method, properties, body):
         print(body.decode("utf-8"))
         # try json..
+
     r.start(callback=callback)

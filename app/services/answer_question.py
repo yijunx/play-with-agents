@@ -18,16 +18,22 @@ class CustomJSONEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def label_chunk_message(chunk_message: str, message_id: str, keep_listening: True) -> str:
+def label_chunk_message(
+    chunk_message: str, message_id: str, keep_listening: True
+) -> str:
     return json.dumps(
         {"id": message_id, "content": chunk_message, "keep_listening": keep_listening}
     )
 
 
-def reply_with_stream(user_id: str, messages: list[MessageForOpenai], chat_id: str, agent: Agent) -> tuple[str, str]:
+def reply_with_stream(
+    user_id: str, messages: list[MessageForOpenai], chat_id: str, agent: Agent
+) -> tuple[str, str]:
     connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
     channel = connection.channel()
-    channel.exchange_declare(exchange=configurations.MQ_EXCHANGE, exchange_type="direct")
+    channel.exchange_declare(
+        exchange=configurations.MQ_EXCHANGE, exchange_type="direct"
+    )
 
     client = AzureOpenAI(
         api_key=configurations.OPENAI_API_KEY,
@@ -58,12 +64,12 @@ def reply_with_stream(user_id: str, messages: list[MessageForOpenai], chat_id: s
         created_by_name=agent.name,
         created_at=datetime.now(timezone.utc),
         actual_content="",
-        chat_id=chat_id
+        chat_id=chat_id,
     )
     channel.basic_publish(
         exchange="direct_logs",
         routing_key=user_id,
-        body = json.dumps(empty_message.dict(), cls=CustomJSONEncoder)
+        body=json.dumps(empty_message.dict(), cls=CustomJSONEncoder),
     )
 
     for chunk in response:
@@ -74,16 +80,20 @@ def reply_with_stream(user_id: str, messages: list[MessageForOpenai], chat_id: s
 
         if chunk_message:
             channel.basic_publish(
-                exchange="direct_logs", routing_key=user_id, body=label_chunk_message(
+                exchange="direct_logs",
+                routing_key=user_id,
+                body=label_chunk_message(
                     chunk_message=chunk_message, message_id=message_id
-                )
+                ),
             )
             full_answer += chunk_message
 
     channel.basic_publish(
-        exchange="direct_logs", routing_key=user_id, body=label_chunk_message(
+        exchange="direct_logs",
+        routing_key=user_id,
+        body=label_chunk_message(
             chunk_message="", message_id=message_id, keep_listening=False
-        )
+        ),
     )
     channel.close()
     connection.close()

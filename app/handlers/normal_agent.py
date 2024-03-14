@@ -24,6 +24,7 @@ class NormalHandler(AgentHandler):
         self.task_id = job.task_id
 
         # so we know which task is finished!!!
+
     def handle_conversation(self):
 
         # add system message
@@ -34,7 +35,7 @@ class NormalHandler(AgentHandler):
             messages=self.messages,
             user_id=self.user_id,
             chat_id=self.chat_id,
-            agent=self.agent
+            agent=self.agent,
         )
         # print(f"full reply from {self.agent.occupation}:")
         # print(full_reply)

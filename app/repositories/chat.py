@@ -6,10 +6,7 @@ from uuid import uuid4
 
 
 def create(db: Session, user_id: str) -> ChatORM:
-    db_item = ChatORM(
-        id=str(uuid4()),
-        user_id=user_id
-    )
+    db_item = ChatORM(id=str(uuid4()), user_id=user_id)
     db.add(db_item)
     db.flush()
     return db_item

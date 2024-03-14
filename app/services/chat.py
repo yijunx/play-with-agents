@@ -58,7 +58,7 @@ def user_start_chat(user: User, message_create: MessageCreate) -> Chat:
 
         # we also needs to randomly choose 1 to answer for the first time
         # later we need to find agents to create but now lets just hard code
-        lucky_number = random.randint(1,len(AGENTS))
+        lucky_number = random.randint(1, len(AGENTS))
         lucky_agent = None
         rounds = 1
         for agent in AGENTS:
@@ -67,7 +67,7 @@ def user_start_chat(user: User, message_create: MessageCreate) -> Chat:
                 db_agent.remaining_replies_count -= 1
                 lucky_agent = Agent.from_orm(db_agent)
             rounds += 1
-        
+
         # the lucky agent gets the job
         job = Job(
             messages=messages_for_openai,
@@ -108,7 +108,7 @@ def user_post_chat(
 
         # charge the db agent
         db_agents = AgentRepo.get_many(db=db, chat_id=chat_id)
-        lucky_number = random.randint(1,len(AGENTS))
+        lucky_number = random.randint(1, len(AGENTS))
         lucky_agent = None
         rounds = 1
         for db_agent in db_agents:
@@ -143,15 +143,22 @@ def agent_post_chat(message_create_from_agent: AgentMessageCreate, task_id: str)
             db=db, message_create_from_agent=message_create_from_agent
         )
         messages_for_openai.append(MessageForOpenai.from_orm(db_message))
-        
+
         db_agents = AgentRepo.get_many(db=db, chat_id=chat.id, can_still_talk=True)
-        agents = [Agent.from_orm(x) for x in db_agents if x.id != message_create_from_agent.agent_id]
+        agents = [
+            Agent.from_orm(x)
+            for x in db_agents
+            if x.id != message_create_from_agent.agent_id
+        ]
         if len(agents) == 0:
             TodoRepo.delete_one(db=db, task_id=task_id)
             return
 
-        # choose a agent..
-        lucky_agent = random.choice(agents)
+        # choose a agent which has most remaining response count..
+        lucky_agent = sorted(
+            agents, key=lambda x: x.remaining_replies_count, reverse=True
+        )[0]
+        # lucky_agent = random.choice(agents)
         for db_agent in db_agents:
             if db_agent.id != lucky_agent.id:
                 continue

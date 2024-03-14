@@ -33,8 +33,18 @@ def get_many(db: Session, chat_id: str, can_still_talk: bool = None) -> list[Age
         return db.query(AgentORM).filter(AgentORM.chat_id == chat_id).all()
     else:
         if can_still_talk:
-            return db.query(AgentORM).filter(AgentORM.chat_id == chat_id, AgentORM.remaining_replies_count > 0).all()
+            return (
+                db.query(AgentORM)
+                .filter(
+                    AgentORM.chat_id == chat_id, AgentORM.remaining_replies_count > 0
+                )
+                .all()
+            )
         else:
-            return db.query(AgentORM).filter(AgentORM.chat_id == chat_id, AgentORM.remaining_replies_count == 0).all()
-
-
+            return (
+                db.query(AgentORM)
+                .filter(
+                    AgentORM.chat_id == chat_id, AgentORM.remaining_replies_count == 0
+                )
+                .all()
+            )
