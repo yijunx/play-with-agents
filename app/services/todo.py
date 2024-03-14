@@ -14,6 +14,10 @@ def get_all_todos_and_trigger():
         db_todos = TodoRepo.get_need_run(db=db)
         for db_todo in db_todos:
             todo = Todo.from_orm(db_todo)
+            # TODO
+            # if not scheduled, send the task
+            # if scheduled, still there, it could be still processing
+            # send the task if it has been scheduled for 5s, then refresh the scheduled
 
             celery.send_task(
                 name=f"{conf.CELERY_TASK_NAME}.do_it",
