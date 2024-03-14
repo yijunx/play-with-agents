@@ -25,6 +25,7 @@ class MessageCreate(BaseModel):
 
 
 class AgentMessageCreate(BaseModel):
+    id: str
     agent_name: str
     agent_id: int
     actual_content: str
@@ -41,10 +42,12 @@ class MessageForOpenai(BaseModel):
 
 
 class MessageForFrontend(BaseModel):
+    id: str
     created_by: str
     created_by_name: str
     created_at: datetime
     actual_content: str
+    chat_id: str
 
     class Config:
         orm_mode = True

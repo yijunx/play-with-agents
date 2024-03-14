@@ -1,5 +1,5 @@
 from app.models.sqlalchemy.base import Base
-from sqlalchemy import BigInteger, Boolean, DateTime, String, Integer
+from sqlalchemy import Boolean, DateTime, String, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from datetime import datetime
@@ -8,9 +8,9 @@ from datetime import datetime
 class AgentORM(Base):
     __tablename__ = "agents_table"
 
-    id: Mapped[int] = mapped_column(BigInteger, autoincrement=True, primary_key=True)
+    id: Mapped[str] = mapped_column(String, primary_key=True)
 
-    chat_id: Mapped[int] = mapped_column(BigInteger, nullable=False, index=True)
+    chat_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
 
     occupation: Mapped[str] = mapped_column(String, nullable=False)
     name: Mapped[str] = mapped_column(String, nullable=False)
@@ -21,7 +21,7 @@ class AgentORM(Base):
 
 class ChatORM(Base):
     __tablename__ = "chats_table"
-    id: Mapped[int] = mapped_column(BigInteger, autoincrement=True, primary_key=True)
+    id: Mapped[str] = mapped_column(String, primary_key=True)
 
     # for whom this conversation is for
     user_id: Mapped[str] = mapped_column(String, nullable=False)
@@ -35,10 +35,10 @@ class ChatORM(Base):
 class MessageORM(Base):
     __tablename__ = "messages_table"
 
-    id: Mapped[int] = mapped_column(BigInteger, autoincrement=True, primary_key=True)
+    id: Mapped[str] = mapped_column(String, primary_key=True)
 
     # for which chat is for
-    chat_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    chat_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
 
     # then we have the agents, without relation first
     role: Mapped[str] = mapped_column(String, nullable=False)

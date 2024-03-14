@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class Agent(BaseModel):
-    id: int | None
+    id: str | None
     name: str | None
     occupation: str
     temper: str | None

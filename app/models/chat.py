@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class Chat(BaseModel):
-    id: int
+    id: str
     user_id: str
     ended: bool
 

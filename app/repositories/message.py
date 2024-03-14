@@ -3,12 +3,14 @@ from datetime import datetime, timezone
 from app.models.sqlalchemy.chat import MessageORM
 from app.models.message import RoleEnum, MessageCreate, AgentMessageCreate
 from app.models.user import User
+from uuid import uuid4
 
 
 def create_message_from_user(
     db: Session, chat_id: str, message_create: MessageCreate, user: User
 ) -> MessageORM:
     db_item = MessageORM(
+        id=str(uuid4()),
         chat_id=chat_id,
         role=RoleEnum.user,
         # content
@@ -28,6 +30,7 @@ def create_message_from_agent(
     db: Session, message_create_from_agent: AgentMessageCreate
 ) -> MessageORM:
     db_item = MessageORM(
+        id=message_create_from_agent.id,
         chat_id=message_create_from_agent.chat_id,
         role=RoleEnum.assistant,
         # content

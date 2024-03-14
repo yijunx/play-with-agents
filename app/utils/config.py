@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     CELERY_QUEUE: str
     CELERY_TASK_NAME: str
 
+    MQ_EXCHANGE: str = "chat_exchange"
+    # RMQ_CONN_URL: str = "amqp://rabbitmq:5672"
+
     MAX_MESSAGES_FROM_AGENTS_FOR_ONE_TRIGGER: int
     DATABASE_URI: str
 

@@ -23,14 +23,18 @@ class NormalHandler(AgentHandler):
         self.chat_id = job.chat_id
         self.task_id = job.task_id
 
+        # so we know which task is finished!!!
     def handle_conversation(self):
 
         # add system message
         if self.agent.remaining_replies_count == 0:
             return
 
-        full_reply = QuestionAnswerService.reply_with_stream(
-            messages=self.messages, user_id=self.user_id
+        full_reply, message_id = QuestionAnswerService.reply_with_stream(
+            messages=self.messages,
+            user_id=self.user_id,
+            chat_id=self.chat_id,
+            agent=self.agent
         )
         # print(f"full reply from {self.agent.occupation}:")
         # print(full_reply)
@@ -39,9 +43,13 @@ class NormalHandler(AgentHandler):
         # so that it is like a forum!!
         # {“role”:“user”,“content”:“%USERNAME said %COMMAND%”}]}
         # {“role”:“user”,“content”:“John Doe said hows it going fam”}]}
+
+        # send the full message back to save into
+        # just for db purpose!!!
         r = requests.post(
             url=configurations.AGENT_INTERNAL_POST_URL.format(task_id=self.task_id),
             json=AgentMessageCreate(
+                id=message_id,
                 agent_id=self.agent.id,
                 agent_name=self.agent.name,
                 actual_content=full_reply,
@@ -49,4 +57,5 @@ class NormalHandler(AgentHandler):
                 chat_id=self.chat_id,
             ).dict(),
         )
+
         # print(r.status_code)

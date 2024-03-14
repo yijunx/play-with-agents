@@ -13,7 +13,7 @@ if __name__ == "__main__":
     print(
         make_token(
             user_info_dict={
-                "id": 123,
+                "id": "user-id",
                 "name": "Tom Bar",
             }
         )

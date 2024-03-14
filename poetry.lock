@@ -525,6 +525,21 @@ Flask = "*"
 pydantic = ">=1.7"
 
 [[package]]
+name = "flask-sock"
+version = "0.6.0"
+description = "WebSocket support for Flask"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "flask-sock-0.6.0.tar.gz", hash = "sha256:435cf81bb497ac7622cd1dda554fbfa3e369e629daea0a1d21b73a24f1bd6229"},
+    {file = "flask_sock-0.6.0-py3-none-any.whl", hash = "sha256:593fffb186928080a5b5b03d717efc56dac2d5ed690ce6bfff333b3597a2f518"},
+]
+
+[package.dependencies]
+flask = ">=2"
+simple-websocket = ">=0.5.1"
+
+[[package]]
 name = "greenlet"
 version = "3.0.3"
 description = "Lightweight in-process concurrent programming"
@@ -1087,6 +1102,23 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
+name = "simple-websocket"
+version = "1.0.0"
+description = "Simple WebSocket server and client for Python"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "simple-websocket-1.0.0.tar.gz", hash = "sha256:17d2c72f4a2bd85174a97e3e4c88b01c40c3f81b7b648b0cc3ce1305968928c8"},
+    {file = "simple_websocket-1.0.0-py3-none-any.whl", hash = "sha256:1d5bf585e415eaa2083e2bcf02a3ecf91f9712e7b3e6b9fa0b461ad04e0837bc"},
+]
+
+[package.dependencies]
+wsproto = "*"
+
+[package.extras]
+docs = ["sphinx"]
+
+[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -1293,7 +1325,21 @@ MarkupSafe = ">=2.1.1"
 [package.extras]
 watchdog = ["watchdog (>=2.3)"]
 
+[[package]]
+name = "wsproto"
+version = "1.2.0"
+description = "WebSockets state-machine based protocol implementation"
+optional = false
+python-versions = ">=3.7.0"
+files = [
+    {file = "wsproto-1.2.0-py3-none-any.whl", hash = "sha256:b9acddd652b585d75b20477888c56642fdade28bdfd3579aa24a4d2c037dd736"},
+    {file = "wsproto-1.2.0.tar.gz", hash = "sha256:ad565f26ecb92588a3e43bc3d96164de84cd9902482b130d0ddbaa9664a85065"},
+]
+
+[package.dependencies]
+h11 = ">=0.9.0,<1"
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "6d5728a390a7be3e9fdedb675b9a66a5882dbaea65afb824732b74ee6f37049a"
+content-hash = "2b27179eff143652d25442ebba142c3c936a92246bacedeeae190e11eaa461ad"

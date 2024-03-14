@@ -16,6 +16,7 @@ from app.models.message import (
 )
 from app.utils.config import configurations
 from app.models.exceptions import CustomException
+import random
 
 
 AGENTS = [
@@ -48,27 +49,34 @@ def user_start_chat(user: User, message_create: MessageCreate) -> Chat:
         # create the repo
         db_chat = ChatRepo.create(db=db, user_id=user.id)
         chat = Chat.from_orm(db_chat)
-        # create the agents
-        # later we need to find agents to create but now lets just hard code
 
-        # create the first message
         db_message = MessageRepo.create_message_from_user(
             db=db, chat_id=db_chat.id, message_create=message_create, user=user
         )
-        # message_for_frontend = MessageForFrontend.from_orm(db_message)
+        message_for_frontend = MessageForFrontend.from_orm(db_message)
         messages_for_openai = [MessageForOpenai.from_orm(db_message)]
 
-        # each agent now has a job!
+        # we also needs to randomly choose 1 to answer for the first time
+        # later we need to find agents to create but now lets just hard code
+        lucky_number = random.randint(1,len(AGENTS))
+        lucky_agent = None
+        rounds = 1
         for agent in AGENTS:
             db_agent = AgentRepo.create(db=db, chat_id=db_chat.id, agent=agent)
-            job = Job(
-                messages=messages_for_openai,
-                agent=Agent.from_orm(db_agent),
-                user_id=user.id,
-                chat_id=chat.id,
-            )
-            TodoRepo.create(db=db, job=job)
-    return chat
+            if rounds == lucky_number:
+                db_agent.remaining_replies_count -= 1
+                lucky_agent = Agent.from_orm(db_agent)
+            rounds += 1
+        
+        # the lucky agent gets the job
+        job = Job(
+            messages=messages_for_openai,
+            agent=lucky_agent,
+            user_id=user.id,
+            chat_id=chat.id,
+        )
+        TodoRepo.create(db=db, job=job)
+    return message_for_frontend
 
 
 def user_post_chat(
@@ -77,37 +85,48 @@ def user_post_chat(
     with get_db() as db:
         db_chat = ChatRepo.get_one(db=db, chat_id=chat_id)
 
+        # check if still can chat
         if db_chat.ended:
             raise CustomException(http_code=400, message="This chat is closed")
         if db_chat.user_id != user.id:
             raise CustomException(http_code=403, message="well it is your chat..")
-
+        # get current messages
         current_messages = MessageRepo.get_many(db=db, chat_id=chat_id)
-
         messages_for_openai = [MessageForOpenai.from_orm(x) for x in current_messages]
+
+        # create this message
         db_message = MessageRepo.create_message_from_user(
             db=db, chat_id=chat_id, message_create=message_create, user=user
         )
         message_for_frontend = MessageForFrontend.from_orm(db_message)
-        messages_for_openai.append(MessageForOpenai.from_orm(db_message))
-        db_agents = AgentRepo.get_many(db=db, chat_id=chat_id)
 
-        # delete all the current todos first!!!
+        # adds to messages for openai for the job
+        messages_for_openai.append(MessageForOpenai.from_orm(db_message))
+
+        # remove all the current todo
         TodoRepo.delete_many(db=db, chat_id=chat_id)
 
-        # charge the dbagent
+        # charge the db agent
+        db_agents = AgentRepo.get_many(db=db, chat_id=chat_id)
+        lucky_number = random.randint(1,len(AGENTS))
+        lucky_agent = None
+        rounds = 1
         for db_agent in db_agents:
             db_agent.remaining_replies_count = (
                 configurations.MAX_MESSAGES_FROM_AGENTS_FOR_ONE_TRIGGER
             )
-            agent = Agent.from_orm(db_agent)
-            job = Job(
-                messages=messages_for_openai,
-                agent=agent,
-                user_id=user.id,
-                chat_id=chat_id,
-            )
-            TodoRepo.create(db=db, job=job)
+            if rounds == lucky_number:
+                db_agent.remaining_replies_count -= 1
+                lucky_agent = Agent.from_orm(db_agent)
+            rounds += 1
+
+        job = Job(
+            messages=messages_for_openai,
+            agent=lucky_agent,
+            user_id=user.id,
+            chat_id=chat_id,
+        )
+        TodoRepo.create(db=db, job=job)
     return message_for_frontend
 
 
@@ -125,26 +144,26 @@ def agent_post_chat(message_create_from_agent: AgentMessageCreate, task_id: str)
         )
         messages_for_openai.append(MessageForOpenai.from_orm(db_message))
         
-        db_agents = AgentRepo.get_many(db=db, chat_id=chat.id)
-        # this_agent = AgentRepo.get_one(
-        #     db=db, agent_id=message_create_from_agent.agent_id
-        # )
-        # this_agent.remaining_replies_count -= 1
-        for db_agent in db_agents:
-            db_agent.remaining_replies_count -= 1
-            agent = Agent.from_orm(db_agent)
-            if (
-                agent.remaining_replies_count > 0
-                and agent.id != message_create_from_agent.agent_id
-            ):
-                job = Job(
-                    messages=messages_for_openai,
-                    agent=agent,
-                    user_id=chat.user_id,
-                    chat_id=message_create_from_agent.chat_id,
-                )
-                TodoRepo.create(db=db, job=job)
+        db_agents = AgentRepo.get_many(db=db, chat_id=chat.id, can_still_talk=True)
+        agents = [Agent.from_orm(x) for x in db_agents if x.id != message_create_from_agent.agent_id]
+        if len(agents) == 0:
+            TodoRepo.delete_one(db=db, task_id=task_id)
+            return
 
+        # choose a agent..
+        lucky_agent = random.choice(agents)
+        for db_agent in db_agents:
+            if db_agent.id != lucky_agent.id:
+                continue
+            # it is all lucky agent...
+            db_agent.remaining_replies_count -= 1
+            job = Job(
+                messages=messages_for_openai,
+                agent=lucky_agent,
+                user_id=chat.user_id,
+                chat_id=message_create_from_agent.chat_id,
+            )
+            TodoRepo.create(db=db, job=job)
         TodoRepo.delete_one(db=db, task_id=task_id)
 
 
