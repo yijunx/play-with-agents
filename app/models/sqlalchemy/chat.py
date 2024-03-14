@@ -1,6 +1,6 @@
 from app.models.sqlalchemy.base import Base
 from sqlalchemy import Boolean, DateTime, String, Integer
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from datetime import datetime
 
@@ -26,9 +26,7 @@ class ChatORM(Base):
     # for whom this conversation is for
     user_id: Mapped[str] = mapped_column(String, nullable=False)
 
-    # then we have the agents, without relation first
-
-    # and ended by default is no
+    # and ended by default is False
     ended: Mapped[bool] = mapped_column(Boolean, server_default="false")
 
 
