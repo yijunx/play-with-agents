@@ -15,7 +15,7 @@ class TodoORM(Base):
     id: Mapped[str] = mapped_column(String, primary_key=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     scheduled_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    chat_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    chat_id: Mapped[str] = mapped_column(String, nullable=False)
     job: Mapped[dict] = mapped_column(JSON, nullable=False)
 
 

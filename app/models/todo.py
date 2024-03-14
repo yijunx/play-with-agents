@@ -17,7 +17,7 @@ class Todo(BaseModel):
     created_at: datetime
     scheduled_at: datetime
     job: Job
-    finished_at: datetime = None
+    chat_id: str
 
     class Config:
         orm_mode = True

@@ -27,7 +27,7 @@ class MessageCreate(BaseModel):
 class AgentMessageCreate(BaseModel):
     id: str
     agent_name: str
-    agent_id: int
+    agent_id: str
     actual_content: str
     content: str
     chat_id: str

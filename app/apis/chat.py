@@ -49,7 +49,7 @@ def start_chat(body: MessageCreate):
         return {"message": e.message}, e.http_code
 
 
-@bp.route("/multi-agent-chat/chats/<int:chat_id>", methods=["POST"])
+@bp.route("/multi-agent-chat/chats/<chat_id>", methods=["POST"])
 @validate()
 def continue_chat(body: MessageCreate, chat_id: int):
     try:
@@ -60,7 +60,7 @@ def continue_chat(body: MessageCreate, chat_id: int):
         return {"message": e.message}, e.http_code
 
 
-@bp.route("/multi-agent-chat/chats/<int:chat_id>/messages", methods=["GET"])
+@bp.route("/multi-agent-chat/chats/<chat_id>/messages", methods=["GET"])
 def get_chat_messages(chat_id: int):
     try:
         r = ChatService.user_get_messages(chat_id=chat_id)
@@ -70,7 +70,7 @@ def get_chat_messages(chat_id: int):
         return {"message": e.message}, e.http_code
 
 
-@bp.route("/multi-agent-chat/chats/<int:chat_id>/internal-messages", methods=["GET"])
+@bp.route("/multi-agent-chat/chats/<chat_id>/internal-messages", methods=["GET"])
 def get_chat_interal_messages(chat_id: int):
     try:
         r = ChatService.user_get_internal_messages(chat_id=chat_id)
@@ -80,7 +80,7 @@ def get_chat_interal_messages(chat_id: int):
         return {"message": e.message}, e.http_code
 
 
-@bp.route("/multi-agent-chat/chats/<int:chat_id>", methods=["DELETE"])
+@bp.route("/multi-agent-chat/chats/<chat_id>", methods=["DELETE"])
 def close_chat(chat_id: int):
     try:
         user = get_actor_from_request(request=request)

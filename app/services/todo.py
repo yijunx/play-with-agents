@@ -19,8 +19,6 @@ def get_all_todos_and_trigger():
                 name=f"{conf.CELERY_TASK_NAME}.do_it",
                 kwargs=todo.job.dict(),
                 queue=conf.CELERY_QUEUE,
-                # exchange="claim-events",
-                # routing_key="claim-events",
             )
 
 

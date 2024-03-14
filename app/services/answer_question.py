@@ -19,7 +19,7 @@ class CustomJSONEncoder(json.JSONEncoder):
 
 
 def label_chunk_message(
-    chunk_message: str, message_id: str, keep_listening: True
+    chunk_message: str, message_id: str, keep_listening: bool = True
 ) -> str:
     return json.dumps(
         {"id": message_id, "content": chunk_message, "keep_listening": keep_listening}
@@ -31,8 +31,9 @@ def reply_with_stream(
 ) -> tuple[str, str]:
     connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
     channel = connection.channel()
+    exchange = configurations.MQ_EXCHANGE
     channel.exchange_declare(
-        exchange=configurations.MQ_EXCHANGE, exchange_type="direct"
+        exchange=exchange, exchange_type="direct"
     )
 
     client = AzureOpenAI(
@@ -67,7 +68,7 @@ def reply_with_stream(
         chat_id=chat_id,
     )
     channel.basic_publish(
-        exchange="direct_logs",
+        exchange=exchange,
         routing_key=user_id,
         body=json.dumps(empty_message.dict(), cls=CustomJSONEncoder),
     )
@@ -80,7 +81,7 @@ def reply_with_stream(
 
         if chunk_message:
             channel.basic_publish(
-                exchange="direct_logs",
+                exchange=exchange,
                 routing_key=user_id,
                 body=label_chunk_message(
                     chunk_message=chunk_message, message_id=message_id
@@ -89,7 +90,7 @@ def reply_with_stream(
             full_answer += chunk_message
 
     channel.basic_publish(
-        exchange="direct_logs",
+        exchange=exchange,
         routing_key=user_id,
         body=label_chunk_message(
             chunk_message="", message_id=message_id, keep_listening=False
