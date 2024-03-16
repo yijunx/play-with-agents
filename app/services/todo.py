@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from celery import Celery
 from app.utils.db import get_db
 import app.repositories.todo as TodoRepo
@@ -14,16 +14,20 @@ def get_all_todos_and_trigger():
         db_todos = TodoRepo.get_need_run(db=db)
         for db_todo in db_todos:
             todo = Todo.from_orm(db_todo)
-            # TODO
-            # if not scheduled, send the task
-            # if scheduled, still there, it could be still processing
-            # send the task if it has been scheduled for 5s, then refresh the scheduled
 
-            celery.send_task(
-                name=f"{conf.CELERY_TASK_NAME}.do_it",
-                kwargs=todo.job.dict(),
-                queue=conf.CELERY_QUEUE,
-            )
+            if todo.scheduled:
+                if todo.scheduled_at < (datetime.now(timezone.utc) - timedelta(seconds=10)).replace(tzinfo=None):
+                    # if scheduled 10s ago, still not processed
+                    # we can mark it failed
+                    todo.scheduled = False
+                    todo.scheduled_at = datetime.now(timezone.utc)
+            else:
+                db_todo.scheduled = True
+                celery.send_task(
+                    name=f"{conf.CELERY_TASK_NAME}.do_it",
+                    kwargs=todo.job.dict(),
+                    queue=conf.CELERY_QUEUE,
+                )
 
 
 def finished_a_task(task_id: str):

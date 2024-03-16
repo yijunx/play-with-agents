@@ -15,6 +15,7 @@ class Job(BaseModel):
 class Todo(BaseModel):
     id: str
     created_at: datetime
+    scheduled: bool
     scheduled_at: datetime
     job: Job
     chat_id: str

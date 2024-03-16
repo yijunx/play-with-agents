@@ -1,6 +1,6 @@
 from app.models.sqlalchemy.base import Base
 from sqlalchemy import (
-    Integer,
+    Boolean,
     DateTime,
     String,
     JSON,
@@ -17,6 +17,7 @@ class TodoORM(Base):
     scheduled_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     chat_id: Mapped[str] = mapped_column(String, nullable=False)
     job: Mapped[dict] = mapped_column(JSON, nullable=False)
+    scheduled: Mapped[bool] = mapped_column(Boolean, server_default="false")
 
 
 # class FinishedTodoORM(Base):
