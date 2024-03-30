@@ -1,5 +1,5 @@
 import pika
-from websocket.config import configurations as config
+from config import configurations as config
 from logging import getLogger
 
 

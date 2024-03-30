@@ -16,6 +16,14 @@ services:
     depends_on:
       - db
 
+  ws:
+    build:
+      context: ../websocket
+    ports:
+      - 8005:5000
+    depends_on:
+      - app
+
   db:
     image: postgres:14
     ports:

@@ -10,3 +10,7 @@ play with llm agents
 * to ask question to agents:
     * edit `trigger_celery.py` at the parts under `if __name__ == "__main__"` 
     * then open another terminal, run `poetry shell`, then run `python trigger_celery.py`. When this script is run, all agents will hear what you ask at the same time, then answer in the log of the terminal of `python app/main.py`.
+
+
+# TODO
+update readme pls

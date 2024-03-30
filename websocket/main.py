@@ -1,7 +1,7 @@
 # # # gunicorn -b 0.0.0.0:5000 --workers 4 --threads 100 app.main:app
 
 from flask_sock import Sock
-from websocket.receiver import Receiver
+from receiver import Receiver
 from flask import Flask, Request
 from flask import request
 from logging import getLogger
@@ -64,4 +64,4 @@ def connect(ws):
 
 
 if __name__ == "__main__":
-    sock.run(app, host="localhost", port=8000, debug=True)
+    sock.run(app, host="localhost", port=5000, debug=True)
