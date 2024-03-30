@@ -30,8 +30,12 @@ def get_actor_from_request(request: Request) -> User:
         raise CustomException(http_code=401, message="auth failed")
     token = m.group(1)
     payload = jwt.decode(token, options={"verify_signature": False})
+    print(payload)
     try:
-        actor = User(**payload)
+        actor = User(
+            name=payload["name"],
+            id=payload["sub"]
+        )
     except Exception:
         logger.warning("failed to create actor from internal token")
         raise CustomException(http_code=401, message="auth failed")

@@ -44,7 +44,7 @@ AGENTS = [
 ]
 
 
-def user_start_chat(user: User, message_create: MessageCreate) -> Chat:
+def user_start_chat(user: User, message_create: MessageCreate) -> MessageForFrontend:
     with get_db() as db:
         # create the repo
         db_chat = ChatRepo.create(db=db, user_id=user.id)

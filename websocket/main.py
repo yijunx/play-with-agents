@@ -6,6 +6,7 @@ from flask import Flask, Request
 from flask import request
 from logging import getLogger
 from pydantic import BaseModel
+from flask_cors import CORS
 import re
 import jwt
 
@@ -13,6 +14,7 @@ import jwt
 logger = getLogger(__name__)
 
 app = Flask(__name__)
+cors = CORS(app)
 sock = Sock(app)
 
 
@@ -27,7 +29,10 @@ def get_actor_from_request(request: Request) -> User:
     token = m.group(1)
     payload = jwt.decode(token, options={"verify_signature": False})
     try:
-        actor = User(**payload)
+        actor = User(
+            name=payload["name"],
+            id=payload["sub"]
+        )
     except Exception:
         logger.warning("failed to create actor from internal token")
     return actor
@@ -64,4 +69,4 @@ def connect(ws):
 
 
 if __name__ == "__main__":
-    sock.run(app, host="localhost", port=5000, debug=True)
+    sock.run(app, host="0.0.0.0", port=5000, debug=True)
