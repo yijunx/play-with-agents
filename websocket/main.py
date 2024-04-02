@@ -22,12 +22,34 @@ class User(BaseModel):
     name: str
     id: str
 
+# def get_actor_from_request(request: Request) -> User:
+#     try:
+#         authorization = request.headers["authorization"]
+#     except KeyError:
+#         logger.warning("no athorization header")
+#         raise CustomException(http_code=401, message="auth failed")
+#     m = re.match(r"bearer (.+)", authorization, re.IGNORECASE)
+#     if m is None:
+#         logger.warning("invalid authorization type")
+#         raise CustomException(http_code=401, message="auth failed")
+#     token = m.group(1)
+#     payload = jwt.decode(token, options={"verify_signature": False})
+#     print(payload)
+#     try:
+#         actor = User(
+#             name=payload["name"],
+#             id=payload["sub"]
+#         )
+#     except Exception:
+#         logger.warning("failed to create actor from internal token")
+#         raise CustomException(http_code=401, message="auth failed")
+#     return actor
 
 def get_actor_from_request(request: Request) -> User:
-    authorization = request.args.get["token"]
-    m = re.match(r"bearer (.+)", authorization, re.IGNORECASE)
-    token = m.group(1)
+    token = request.args.get("token")
+    logger.warning(token)
     payload = jwt.decode(token, options={"verify_signature": False})
+    logger.warning(payload)
     try:
         actor = User(
             name=payload["name"],

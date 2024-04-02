@@ -53,7 +53,7 @@ def start_chat(body: MessageCreate):
         return {"message": e.message}, e.http_code
 
 
-@bp.route("/multi-agent-chat/chats/<chat_id>", methods=["POST"])
+@bp.route("/multi-agent-chat/chats/<chat_id>/messages", methods=["POST"])
 @validate()
 def continue_chat(body: MessageCreate, chat_id: str):
     try:
