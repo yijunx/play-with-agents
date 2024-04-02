@@ -14,3 +14,5 @@ play with llm agents
 
 # TODO
 update readme pls
+remove the xxx said in the second round of conversation
+auto delete todo tasks
