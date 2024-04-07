@@ -38,7 +38,7 @@ class NormalHandler(AgentHandler):
             agent=self.agent,
         )
         # print(f"full reply from {self.agent.occupation}:")
-        # print(full_reply)
+        print(full_reply)
 
         # need to save like something below
         # so that it is like a forum!!
@@ -54,6 +54,7 @@ class NormalHandler(AgentHandler):
                 agent_id=self.agent.id,
                 agent_name=self.agent.name,
                 actual_content=full_reply,
+                # content=full_reply,
                 content=f"{self.agent.name} said: \n{full_reply}",
                 chat_id=self.chat_id,
             ).dict(),
